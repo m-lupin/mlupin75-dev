@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nodejs-image-demo
+  labels:
+    app: nodejs-image-demo
+    app.kubernetes.io/component: nodejs-image-demo
+    app.kubernetes.io/instance: nodejs-image-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: nodejs-image-demo
+  template:
+    metadata:
+      labels:
+        deployment: nodejs-image-demo
+    spec:
+      containers:
+        - name: nodejs-image-demo
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/issam-mejri-ext-dev/nodejs-image-demo:v1.0
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
