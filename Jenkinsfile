@@ -18,10 +18,10 @@ pipeline {
         parameters{
             string(name: 'BRANCH', defaultValue: 'master', description: 'Name of the branch to use.')
             string(name: 'NB_REPLICAS', defaultValue: '1', description: 'Number of replicas for deployment.')
-            choice(name: 'ENVIRONMENT', choices: ['issam-mejri-ext-dev', 'issam-mejri-ext-stage'], description: 'The name of the environement where we want to deploy/build resources.')
+            choice(name: 'ENVIRONMENT', choices: ['mlupin75-dev', 'mlupin75-stage'], description: 'The name of the environement where we want to deploy/build resources.')
             choice(name: 'DEPLOYMENT_TYPE', choices: ['','BUILD', 'DEPLOY'], description: 'The name of the type of deployment to process, can be either Build or Deploy.')
             string(name: 'IMAGE_TAG', defaultValue: '', description: 'tag for the build image.')
-	    string(name: 'SOURCES_URL', defaultValue: 'https://github.com/imejri/nodejs-app.git', description: 'Gitlab repository source of the application.')
+	    string(name: 'SOURCES_URL', defaultValue: 'https://github.com/m-lupin/mlupin75-dev.git', description: 'Gitlab repository source of the application.')
 
         }
 
@@ -79,7 +79,7 @@ pipeline {
                     {
                        sh """
                         oc apply -f nodejs-image-demo-deploy.yaml -n ${params.ENVIRONMENT}
-			oc set image deployment/nodejs-image-demo nodejs-image-demo=image-registry.openshift-image-registry.svc:5000/issam-mejri-ext-dev/nodejs-image:${IMAGE_TAG}
+			oc set image deployment/nodejs-image-demo nodejs-image-demo=image-registry.openshift-image-registry.svc:5000/mlupin75-dev/nodejs-image:${IMAGE_TAG}
 			oc scale --replicas=${params.NB_REPLICAS} deployment/nodejs-image-demo
                         oc apply -f nodejs-image-demo-svc.yaml -n ${params.ENVIRONMENT}
                         """
@@ -90,7 +90,7 @@ pipeline {
 		stage("Create route to access the Application")
             	{
                  when {
-                    expression { params.ENVIRONMENT == 'issam-mejri-ext-dev' && params.DEPLOYMENT_TYPE == 'DEPLOY' }
+                    expression { params.ENVIRONMENT == 'mlupin75-dev' && params.DEPLOYMENT_TYPE == 'DEPLOY' }
                  }
                 steps
                 { 
